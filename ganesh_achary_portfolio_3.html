@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ganesh Achary — Data Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070b14;--bg2:#0d1525;
+  --a1:#00d4ff;--a2:#7b5cf0;--a3:#00ff9d;
+  --tx:#e8edf5;--mu:#6b7a99;
+  --bd:rgba(0,212,255,0.15);--card:rgba(13,21,37,0.85);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.2rem 4rem;background:rgba(7,11,20,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd)}
+.logo{font-family:'Space Mono',monospace;font-size:.95rem;color:var(--a1);letter-spacing:.1em}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--mu);text-decoration:none;transition:color .3s;font-family:'Space Mono',monospace}
+.nav-links a:hover{color:var(--a1)}
+
+/* CANVAS */
+#bgc{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 4rem;padding-top:80px;position:relative;z-index:1}
+.status-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem 1rem;border:1px solid rgba(0,255,157,.3);background:rgba(0,255,157,.05);margin-bottom:2rem;opacity:0;animation:fadeUp .8s .1s forwards}
+.sdot{width:6px;height:6px;background:var(--a3);border-radius:50%;box-shadow:0 0 8px var(--a3);animation:blink 2s infinite}
+.stxt{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--a3);letter-spacing:.15em;text-transform:uppercase}
+.hero-tag{font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.25em;color:var(--a1);text-transform:uppercase;margin-bottom:1.5rem;opacity:0;animation:fadeUp .8s .3s forwards}
+h1.hname{font-size:clamp(3.5rem,8vw,8rem);font-weight:800;line-height:.92;opacity:0;animation:fadeUp .8s .5s forwards}
+.hname .n2{color:transparent;-webkit-text-stroke:2px var(--a1);display:block}
+.hero-sub{font-family:'Space Mono',monospace;font-size:clamp(.85rem,1.3vw,.95rem);color:var(--mu);margin:2rem 0;opacity:0;animation:fadeUp .8s .7s forwards;max-width:500px;line-height:1.85}
+.hero-sub span{color:var(--a3)}
+.hero-btns{display:flex;gap:1rem;opacity:0;animation:fadeUp .8s .9s forwards;flex-wrap:wrap}
+.btn{padding:.75rem 1.8rem;font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;display:inline-block;transition:all .3s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+.btn-p{background:var(--a1);color:var(--bg)}
+.btn-p:hover{background:#fff;box-shadow:0 0 30px rgba(0,212,255,.6)}
+.btn-o{background:transparent;color:var(--a1);border:1px solid var(--a1)}
+.btn-o:hover{background:rgba(0,212,255,.1)}
+
+/* ORBIT */
+.orbit-wrap{position:absolute;right:4rem;top:50%;transform:translateY(-50%);width:280px;height:280px;opacity:0;animation:fadeIn 1s 1.3s forwards}
+.oc{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;border:1px solid var(--bd);border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card);backdrop-filter:blur(10px);font-family:'Space Mono',monospace;font-size:8px;color:var(--a1);text-align:center;line-height:1.5;z-index:2}
+.or{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border:1px dashed var(--bd);border-radius:50%}
+.or1{width:155px;height:155px;animation:spin 18s linear infinite}
+.or2{width:255px;height:255px;animation:spin 28s linear infinite reverse;border-style:dotted}
+.oi{position:absolute;top:50%;left:50%;display:flex;flex-direction:column;align-items:center;gap:3px}
+.oi img{width:26px;height:26px;object-fit:contain;filter:brightness(1.6) drop-shadow(0 0 6px rgba(0,212,255,.5))}
+.oi .oisvg{width:26px;height:26px;display:flex;align-items:center;justify-content:center}
+.oi .oisvg svg{width:26px;height:26px}
+.oi span{font-family:'Space Mono',monospace;font-size:6px;color:var(--a3);white-space:nowrap}
+
+/* TOOL STRIP */
+.tstrip{position:absolute;bottom:90px;left:4rem;right:4rem;display:flex;gap:1.2rem;align-items:center;opacity:0;animation:fadeUp .8s 1.2s forwards}
+.tslabel{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--mu);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.tsline{width:1px;height:26px;background:var(--bd);flex-shrink:0}
+.tsrow{display:flex;gap:1.1rem;align-items:center;flex-wrap:wrap}
+.tsi{display:flex;flex-direction:column;align-items:center;gap:3px;opacity:.4;transition:opacity .3s,transform .3s}
+.tsi:hover{opacity:1;transform:translateY(-4px)}
+.tsi img{width:24px;height:24px;object-fit:contain;filter:brightness(1.8)}
+.tsi .tisvg{width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+.tsi .tisvg svg{width:24px;height:24px}
+.tsi span{font-family:'Space Mono',monospace;font-size:6px;color:var(--mu)}
+
+.scroll-ind{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:0;animation:fadeIn 1s 1.6s forwards}
+.sline{width:1px;height:55px;background:linear-gradient(to bottom,transparent,var(--a1));animation:spulse 2s infinite}
+.stx{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.3em;color:var(--mu);text-transform:uppercase;writing-mode:vertical-rl}
+
+/* SECTION COMMONS */
+section{position:relative;z-index:1}
+.slabel{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.3em;color:var(--a1);text-transform:uppercase;margin-bottom:.8rem}
+.slabel::before{content:'// '}
+h2.stitle{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;line-height:1.1;margin-bottom:1.8rem}
+.hi1{color:var(--a1)} .hi2{color:var(--a2)} .hi3{color:var(--a3)}
+
+/* ABOUT */
+#about{padding:8rem 4rem;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.atxt{font-family:'Space Mono',monospace;font-size:.82rem;color:var(--mu);line-height:1.9;margin-bottom:1.2rem}
+.pipeline{display:flex;flex-direction:column}
+.pnode{display:flex;align-items:center;gap:1rem;padding:1rem 1.4rem;border:1px solid var(--bd);background:var(--card);position:relative;transition:all .3s}
+.pnode:hover{border-color:var(--a1);transform:translateX(8px);background:rgba(0,212,255,.04)}
+.pnode::after{content:'';position:absolute;left:1.75rem;bottom:-20px;width:1px;height:20px;background:var(--bd)}
+.pnode:last-child::after{display:none}
+.pdot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.pb{background:#cd7f32;box-shadow:0 0 10px #cd7f32}.ps{background:#c0c0c0;box-shadow:0 0 10px #c0c0c0}.pg{background:#ffd700;box-shadow:0 0 10px #ffd700}.pq{background:var(--a3);box-shadow:0 0 10px var(--a3)}
+.plbl strong{color:var(--tx);font-size:.83rem;font-family:'Space Mono',monospace}
+.plbl span{color:var(--mu);font-size:.68rem;font-family:'Space Mono',monospace;display:block;margin-top:.2rem}
+
+/* SKILLS - INTERACTIVE SHOWCASE */
+#skills{min-height:100vh;background:var(--bg2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);display:flex;flex-direction:column;position:relative;overflow:hidden;padding-top:5rem}
+#skHead{text-align:center;padding:0 4rem 3rem}
+#skWash{position:absolute;inset:0;pointer-events:none;z-index:0;transition:background 1s ease}
+.sk-body{display:grid;grid-template-columns:270px 1fr;flex:1;position:relative;z-index:1}
+.sk-tabs{border-right:1px solid var(--bd);padding:1rem 0;display:flex;flex-direction:column;position:relative}
+.sk-ind{position:absolute;left:0;width:3px;background:var(--a1);border-radius:0 2px 2px 0;transition:top .5s cubic-bezier(.34,1.56,.64,1),height .4s,background .5s;box-shadow:0 0 12px var(--a1)}
+.sk-tab{padding:1.1rem 1.6rem;display:flex;align-items:center;gap:.85rem;cursor:pointer;transition:background .3s}
+.sk-tab:hover{background:rgba(255,255,255,.03)}
+.sk-tab.on{background:rgba(255,255,255,.05)}
+.sk-tabico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;font-family:'Space Mono',monospace;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);transition:all .4s;color:var(--mu)}
+.sk-tab.on .sk-tabico{color:var(--bg);border-color:currentColor}
+.sk-tabn{font-size:.83rem;font-weight:700;color:var(--mu);transition:color .3s}
+.sk-tab.on .sk-tabn{color:var(--tx)}
+.sk-tabc{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--mu);letter-spacing:.08em}
+.sk-show{padding:1.8rem 3rem 2.5rem;display:flex;flex-direction:column}
+.sk-hdr{display:flex;align-items:center;gap:1.3rem;margin-bottom:1.8rem}
+.sk-bigico{width:62px;height:62px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-family:'Space Mono',monospace;flex-shrink:0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
+.sk-cattitle{font-size:1.6rem;font-weight:800}
+.sk-catdesc{font-family:'Space Mono',monospace;font-size:.73rem;color:var(--mu);line-height:1.7;margin-top:.3rem;max-width:480px}
+.sk-grid{display:flex;flex-wrap:wrap;gap:.8rem;align-content:flex-start}
+.sk-card{display:flex;flex-direction:column;align-items:center;gap:.55rem;padding:1.3rem .9rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);min-width:90px;flex:1;max-width:130px;position:relative;overflow:hidden;transition:border-color .3s,background .3s,transform .3s}
+.sk-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;transform:scaleX(0);transition:transform .3s}
+.sk-card:hover::after{transform:scaleX(1)}
+.sk-card:hover{background:rgba(255,255,255,.07);transform:translateY(-6px) scale(1.04)}
+.sk-clogo{width:46px;height:46px;display:flex;align-items:center;justify-content:center}
+.sk-clogo img{width:100%;height:100%;object-fit:contain;filter:brightness(1.5)}
+.sk-clogo svg{width:100%;height:100%}
+.sk-cname{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--mu);letter-spacing:.06em;text-align:center;transition:color .3s}
+.sk-card:hover .sk-cname{color:var(--tx)}
+.sk-dots{display:flex;justify-content:center;gap:.55rem;padding:1.5rem 0 2rem;position:relative;z-index:1}
+.sk-dot{width:6px;height:6px;border-radius:50%;background:var(--bd);cursor:pointer;transition:all .4s}
+.sk-dot.on{border-radius:3px}
+.sk-prog{position:relative;z-index:2;height:2px;background:var(--bd)}
+.sk-fill{height:100%;width:0%}
+
+@keyframes skIn{from{opacity:0;transform:translateY(24px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes skFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes skPulse{0%,100%{box-shadow:0 0 18px currentColor}50%{box-shadow:0 0 35px currentColor,0 0 55px rgba(0,212,255,.15)}}
+
+/* PROJECTS */
+#projects{padding:8rem 4rem}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem;margin-top:3rem}
+.pcard{background:var(--card);border:1px solid var(--bd);padding:2rem;transition:all .4s;position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px))}
+.pcard:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.pnum{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.2em;margin-bottom:.9rem}
+.ptitle{font-size:1.1rem;font-weight:700;margin-bottom:.4rem;color:var(--tx);line-height:1.3}
+.pper{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--mu);margin-bottom:.9rem}
+.ptools{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:.9rem}
+.ptool{display:flex;align-items:center;gap:4px;font-family:'Space Mono',monospace;font-size:.6rem;padding:.25rem .6rem;border:1px solid rgba(0,212,255,.2);background:rgba(0,212,255,.06);transition:all .3s}
+.ptool:hover{transform:translateY(-2px);background:rgba(0,212,255,.12)}
+.ptool img{width:11px;height:11px;object-fit:contain;filter:brightness(1.8)}
+.ptool .ptsvg{width:11px;height:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ptool .ptsvg svg{width:11px;height:11px}
+.pdesc{font-family:'Space Mono',monospace;font-size:.73rem;color:var(--mu);line-height:1.8}
+
+/* EXPERIENCE */
+#experience{padding:6rem 4rem;background:var(--bg2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.egrid{display:grid;grid-template-columns:190px 1fr;gap:4rem;margin-top:3rem}
+.eyr{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--a1);position:sticky;top:120px;text-align:right;padding-right:2rem;border-right:1px solid var(--bd)}
+.eyr .eco{font-size:.73rem;font-weight:700;color:var(--tx);margin-bottom:.3rem;font-family:'Syne',sans-serif}
+.eyr .epe{color:var(--a3);margin-top:.5rem;display:block}
+.eitems{display:flex;flex-direction:column;gap:1.4rem}
+.eitem{border:1px solid var(--bd);padding:1.4rem;background:var(--card);position:relative;transition:all .3s}
+.eitem::before{content:'';position:absolute;left:-2.4rem;top:1.4rem;width:9px;height:9px;background:var(--a1);border-radius:50%;box-shadow:0 0 14px var(--a1)}
+.eitem:hover{border-color:var(--a1);transform:translateX(8px)}
+.erole{font-size:.95rem;font-weight:700;margin-bottom:.5rem}
+.etxt{font-family:'Space Mono',monospace;font-size:.71rem;color:var(--mu);line-height:1.85}
+.etxt strong{color:var(--a3)}
+
+/* CONTACT */
+#contact{padding:8rem 4rem;text-align:center;position:relative}
+.cglow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(ellipse,rgba(0,212,255,.06) 0%,transparent 70%);pointer-events:none}
+.ctitle{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;margin-bottom:1rem}
+.csub{font-family:'Space Mono',monospace;font-size:.82rem;color:var(--mu);margin-bottom:2.5rem;line-height:1.8}
+.clinks{display:flex;justify-content:center;gap:1.2rem;flex-wrap:wrap}
+.clink{display:flex;align-items:center;gap:.65rem;padding:.9rem 1.8rem;border:1px solid var(--bd);background:var(--card);color:var(--mu);text-decoration:none;font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.1em;transition:all .3s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+.clink:hover{border-color:var(--a1);color:var(--a1);background:rgba(0,212,255,.05);transform:translateY(-4px)}
+.clink svg{flex-shrink:0}
+
+footer{padding:1.8rem 4rem;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;font-family:'Space Mono',monospace;font-size:.62rem;color:var(--mu)}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes spin{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes spulse{0%,100%{opacity:.3}50%{opacity:1}}
+@keyframes glitch{0%,100%{clip-path:inset(0 0 100% 0)}20%{clip-path:inset(30% 0 50% 0);transform:translate(-2px)}40%{clip-path:inset(10% 0 70% 0);transform:translate(2px)}60%{clip-path:inset(60% 0 20% 0);transform:translate(-1px)}80%{clip-path:inset(80% 0 5% 0);transform:translate(1px)}}
+@keyframes bgfloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-18px) rotate(2deg)}}
+
+.glitch{position:relative}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%}
+.glitch::before{color:var(--a2);animation:glitch 4s 2s infinite}
+.glitch::after{color:var(--a1);animation:glitch 4s 2.1s infinite reverse}
+
+.rv{opacity:0;transform:translateY(36px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+.rv.vis{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+/* FLOATING BG LOGOS */
+.fbg{position:fixed;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;z-index:0;opacity:.055}
+.fbg img{width:42px;height:42px;object-fit:contain;filter:brightness(2) saturate(.5)}
+.fbg .fbsvg{width:42px;height:42px;display:flex;align-items:center;justify-content:center}
+.fbg .fbsvg svg{width:42px;height:42px}
+.fbg span{font-family:'Space Mono',monospace;font-size:6px;color:var(--a1);letter-spacing:.12em;white-space:nowrap}
+
+@media(max-width:900px){
+  nav{padding:1rem 2rem}.nav-links{display:none}
+  #hero{padding:0 2rem;padding-top:90px}.orbit-wrap{display:none}.tstrip{display:none}
+  #about{grid-template-columns:1fr;padding:4rem 2rem;gap:2rem}
+  #skills{padding-top:4rem}#skHead{padding:0 2rem 2rem}
+  .sk-body{grid-template-columns:1fr}
+  .sk-tabs{flex-direction:row;border-right:none;border-bottom:1px solid var(--bd);padding:.4rem;overflow-x:auto}
+  .sk-tab{padding:.7rem .8rem;flex-direction:column;gap:.3rem;min-width:58px}
+  .sk-tabc,.sk-ind{display:none}
+  .sk-show{padding:1.4rem 1.5rem 2rem}
+  .sk-grid{justify-content:center}
+  #projects,#experience,#contact{padding:4rem 2rem}
+  .egrid{grid-template-columns:1fr;gap:1rem}
+  .eyr{text-align:left;border-right:none;border-left:1px solid var(--bd);padding-left:1rem;padding-right:0;position:static}
+  .eitem::before{display:none}
+  footer{padding:1.2rem 2rem;flex-direction:column;gap:.8rem;text-align:center}
+}
+</style>
+</head>
+<body>
+<canvas id="bgc"></canvas>
+<div id="fbgWrap"></div>
+
+<nav>
+  <div class="logo">GA_PORTFOLIO.exe</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="status-badge"><div class="sdot"></div><span class="stxt">Available for Opportunities</span></div>
+  <div class="hero-tag">Data Engineer &middot; ETL Developer &middot; Healthcare Analytics</div>
+  <h1 class="hname">
+    <span>GANESH</span>
+    <span class="n2 glitch" data-text="ACHARY">ACHARY</span>
+  </h1>
+  <p class="hero-sub">Building intelligent <span>data pipelines</span> that turn raw complexity<br>into reliable, analytics-ready intelligence &mdash; across healthcare,<br>genomics &amp; government systems.</p>
+  <div class="hero-btns">
+    <a href="#projects" class="btn btn-p">View Projects</a>
+    <a href="#contact" class="btn btn-o">Get In Touch</a>
+  </div>
+
+  <div class="tstrip">
+    <span class="tslabel">Tech Stack</span>
+    <div class="tsline"></div>
+    <div class="tsrow" id="tsRow"></div>
+  </div>
+
+  <div class="orbit-wrap">
+    <div class="or or1"></div>
+    <div class="or or2"></div>
+    <div class="oc">DATA<br>ENGINEER</div>
+    <div id="orbitWrap"></div>
+  </div>
+
+  <div class="scroll-ind"><span class="stx">Scroll</span><div class="sline"></div></div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="rv">
+    <div class="slabel">About Me</div>
+    <h2 class="stitle">Engineering data that<br><span class="hi1">actually matters</span></h2>
+    <p class="atxt">Data Engineer at Infostats Technologies with 2.5 years building production ETL pipelines for healthcare and genomics systems. I bridge raw, messy data with clean, analytics-ready outputs.</p>
+    <p class="atxt">Experienced in high-compliance environments, collaboration with business analysts, and delivering structured datasets that power real statistical decision-making.</p>
+    <a href="#contact" class="btn btn-o" style="margin-top:1rem">Let's Talk &rarr;</a>
+  </div>
+  <div class="rv d2">
+    <div class="slabel" style="margin-bottom:1.2rem">Medallion Architecture</div>
+    <div class="pipeline">
+      <div class="pnode"><div class="pdot pb"></div><div class="plbl"><strong>Bronze Layer</strong><span>Raw Parquet ingestion &middot; No transformation &middot; Schema validation</span></div></div>
+      <div class="pnode"><div class="pdot ps"></div><div class="plbl"><strong>Silver Layer</strong><span>Null handling &middot; Type conversion &middot; Data standardization</span></div></div>
+      <div class="pnode"><div class="pdot pg"></div><div class="plbl"><strong>Gold Layer</strong><span>Aggregated &middot; Business-ready &middot; Reporting datasets</span></div></div>
+      <div class="pnode"><div class="pdot pq"></div><div class="plbl"><strong>QC Automation</strong><span>Fill rates &middot; Header checks &middot; Row sampling scripts</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div id="skWash"></div>
+  <div id="skHead">
+    <div class="slabel" style="justify-content:center;display:flex">Technical Stack</div>
+    <h2 class="stitle" style="text-align:center">What I work<br><span class="hi2">with</span></h2>
+  </div>
+  <div class="sk-body">
+    <div class="sk-tabs" id="skTabs">
+      <div class="sk-ind" id="skInd"></div>
+    </div>
+    <div class="sk-show">
+      <div class="sk-hdr" id="skHdr">
+        <div class="sk-bigico" id="skBigIco"></div>
+        <div>
+          <div class="sk-cattitle" id="skCatTitle"></div>
+          <div class="sk-catdesc" id="skCatDesc"></div>
+        </div>
+      </div>
+      <div class="sk-grid" id="skGrid"></div>
+    </div>
+  </div>
+  <div class="sk-dots" id="skDots"></div>
+  <div class="sk-prog"><div class="sk-fill" id="skFill"></div></div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="rv" style="text-align:center">
+    <div class="slabel" style="display:flex;justify-content:center">Projects</div>
+    <h2 class="stitle" style="text-align:center">Work that<br><span class="hi3">ships</span></h2>
+  </div>
+  <div class="pgrid">
+    <div class="pcard rv d1" id="pc1" style="--pc:#00d4ff">
+      <div class="pnum" style="color:#00d4ff">PROJECT_01 &middot; NOV 2024 &mdash; PRESENT</div>
+      <div class="ptitle">Infectious Disease Data Mart</div>
+      <div class="pper">Infostats Technologies, Bangalore</div>
+      <div class="ptools" id="pt1"></div>
+      <p class="pdesc">Architected a full Medallion pipeline ingesting Parquet files from infectious disease surveillance. Managed batch processing, schema validation, and data refinement across Bronze to Silver to Gold layers. Built QC automation for fill-rate checks, header validation, and row sampling.</p>
+    </div>
+    <div class="pcard rv d2" id="pc2" style="--pc:#7b5cf0">
+      <div class="pnum" style="color:#7b5cf0">PROJECT_02 &middot; AUG 2023 &mdash; OCT 2024</div>
+      <div class="ptitle">East Coast Healthcare Lab Consolidation</div>
+      <div class="pper">Microbiology, Genetics &amp; General Lab Data Integration</div>
+      <div class="ptools" id="pt2"></div>
+      <p class="pdesc">Led data integration from EHR, LIS, and Genomic systems. Developed stored procedures for aggregate statistical tables, validated multi-source datasets, prepared mapping documents with BAs, and produced analytics-ready datasets with full SOP documentation.</p>
+    </div>
+    <div class="pcard rv d3" id="pc3" style="--pc:#00ff9d">
+      <div class="pnum" style="color:#00ff9d">PROJECT_03 &middot; SEPT 2023 &mdash; JAN 2024</div>
+      <div class="ptitle">AGRI-SYNC</div>
+      <div class="pper">Advanced Government Resource Integration &amp; Yield Network Catalyst</div>
+      <div class="ptools" id="pt3"></div>
+      <p class="pdesc">Integrated government agricultural datasets covering 100+ products across multiple states. Standardized formats, unified rainfall, yield, and price data, and uncovered correlations to support predictive pricing models for farmer decision-support systems.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="rv" style="text-align:center">
+    <div class="slabel" style="display:flex;justify-content:center">Experience</div>
+    <h2 class="stitle" style="text-align:center">Where I've<br><span class="hi1">been building</span></h2>
+  </div>
+  <div class="egrid">
+    <div class="rv eyr">
+      <div class="eco">Infostats Technologies</div>
+      Bangalore, India
+      <span class="epe">2023 &mdash; Present</span>
+    </div>
+    <div class="eitems">
+      <div class="eitem rv d1">
+        <div class="erole">Data Engineer &middot; ETL Developer</div>
+        <p class="etxt">Working across <strong>healthcare, genomics, and government</strong> data domains &mdash; building production ETL pipelines, implementing Medallion Architecture, and integrating multi-source datasets into analytics-ready form.</p>
+      </div>
+      <div class="eitem rv d2">
+        <div class="erole">Key Responsibilities</div>
+        <p class="etxt">
+          &rarr; ETL pipelines in <strong>SSIS, Python, and Azure Data Factory</strong><br>
+          &rarr; Data models and stored procedures for statistical aggregation<br>
+          &rarr; Mapping documents and data dictionaries with Business Analysts<br>
+          &rarr; <strong>QC automation</strong> for fill rates, header checks, row sampling<br>
+          &rarr; SOPs for compliant, reproducible data workflows
+        </p>
+      </div>
+      <div class="eitem rv d3">
+        <div class="erole">Education</div>
+        <p class="etxt">Bachelor of Engineering &mdash; Computer Science &amp; Engineering</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="cglow"></div>
+  <div class="rv">
+    <div class="slabel" style="display:flex;justify-content:center;margin-bottom:1rem">Contact</div>
+    <h2 class="ctitle">Let's <span class="hi1">connect</span></h2>
+    <p class="csub">Open to new opportunities in Data Engineering, ETL Development,<br>and Healthcare Analytics. Based in Bangalore, India.</p>
+    <div class="clinks">
+      <a class="clink" href="https://www.linkedin.com/in/sce19cs034" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#00d4ff"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        linkedin.com/in/sce19cs034
+      </a>
+      <a class="clink" href="mailto:bmganeshachary@gmail.com">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#00d4ff"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-.904.732-1.636 1.636-1.636H2.4L12 10.183l9.6-6.362h.764c.904 0 1.636.732 1.636 1.636z"/></svg>
+        bmganeshachary@gmail.com
+      </a>
+      <a class="clink" href="#projects">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#00d4ff"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+        GitHub Projects
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>GANESH ACHARY &middot; DATA ENGINEER &middot; BANGALORE</span>
+  <span>Portfolio 2025</span>
+</footer>
+
+<script>
+// ── TOOLS ────────────────────────────────────────────────────
+const T = {
+  python:    {u:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',       n:'Python'},
+  sqlserver: {u:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/microsoftsqlserver/microsoftsqlserver-plain.svg', n:'SQL Server'},
+  azure:     {u:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg',         n:'Azure'},
+  spark:     {u:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachespark/apachespark-original.svg', n:'Spark'},
+  oracle:    {u:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/oracle/oracle-original.svg',       n:'Oracle'},
+  databricks:{s:'<svg viewBox="0 0 40 40"><path d="M20 4L4 13.5v8L20 31l16-9.5v-8L20 4z" fill="#FF3621"/><path d="M4 21.5L20 31l16-9.5-16 7-16-7z" fill="#FF6B47"/><path d="M4 26.5L20 36l16-9.5-16 7-16-7z" fill="#FF9980" opacity=".5"/></svg>', n:'Databricks'},
+  powerbi:   {s:'<svg viewBox="0 0 40 40"><rect x="2" y="22" width="7" height="14" rx="2" fill="#F2C811"/><rect x="12" y="14" width="7" height="22" rx="2" fill="#F2C811" opacity=".8"/><rect x="22" y="6" width="7" height="30" rx="2" fill="#F2C811"/><rect x="32" y="17" width="6" height="19" rx="2" fill="#F2C811" opacity=".7"/></svg>', n:'Power BI'},
+  ssis:      {s:'<svg viewBox="0 0 40 40"><rect x="2" y="4" width="15" height="12" rx="3" fill="#0078D4"/><rect x="23" y="4" width="15" height="12" rx="3" fill="#0078D4"/><rect x="2" y="24" width="15" height="12" rx="3" fill="#50A0D8"/><rect x="23" y="24" width="15" height="12" rx="3" fill="#50A0D8"/><path d="M17 10h6M17 30h6M20 16v8" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>', n:'SSIS'},
+  adf:       {s:'<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke="#0078D4" stroke-width="2"/><path d="M20 8v8M20 24v8M8 20h8M24 20h8" stroke="#0078D4" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="20" r="4" fill="#0078D4"/></svg>', n:'ADF'},
+  sql:       {s:'<svg viewBox="0 0 40 40"><ellipse cx="20" cy="12" rx="15" ry="7" fill="#00d4ff" opacity=".7"/><path d="M5 12v8c0 3.87 6.71 7 15 7s15-3.13 15-7v-8" fill="#007090" opacity=".8"/><path d="M5 20v8c0 3.87 6.71 7 15 7s15-3.13 15-7v-8" fill="#004d60" opacity=".8"/></svg>', n:'SQL/T-SQL'},
+  parquet:   {s:'<svg viewBox="0 0 40 40"><rect x="2" y="2" width="36" height="10" rx="2" fill="#00ff9d" opacity=".5"/><rect x="2" y="15" width="36" height="10" rx="2" fill="#00ff9d" opacity=".7"/><rect x="2" y="28" width="36" height="10" rx="2" fill="#00ff9d" opacity=".9"/></svg>', n:'Parquet'},
+  nlp:       {s:'<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke="#7b5cf0" stroke-width="2"/><path d="M10 20h20M20 10l8 10-8 10" stroke="#7b5cf0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="20" r="4" fill="#7b5cf0"/></svg>', n:'NLP/AI'},
+};
+
+function tImg(key, sz) {
+  const t = T[key]||{};
+  if (t.u) return '<img src="'+t.u+'" style="width:'+sz+'px;height:'+sz+'px;object-fit:contain;filter:brightness(1.5)" onerror="this.style.display=\'none\'">';
+  if (t.s) return '<span style="width:'+sz+'px;height:'+sz+'px;display:flex;align-items:center;justify-content:center">'+t.s.replace(/viewBox/g,'viewBox').replace(/<svg /,'<svg style="width:'+sz+'px;height:'+sz+'px" ')+'</span>';
+  return '';
+}
+
+// ── TOOL STRIP ───────────────────────────────────────────────
+const tsRow = document.getElementById('tsRow');
+['python','sqlserver','azure','spark','databricks','ssis','powerbi','oracle','parquet','adf'].forEach(k=>{
+  const t=T[k], img=t.u?'<img src="'+t.u+'" style="width:24px;height:24px;object-fit:contain;filter:brightness(1.8)" onerror="this.style.display=\'none\'">':'<span class="tisvg">'+t.s.replace(/<svg /,'<svg style="width:24px;height:24px" ')+'</span>';
+  tsRow.innerHTML+='<div class="tsi">'+img+'<span>'+t.n+'</span></div>';
+});
+
+// ── ORBIT ────────────────────────────────────────────────────
+const ow=document.getElementById('orbitWrap');
+['python','spark','databricks','azure','ssis','powerbi','sqlserver','oracle'].forEach((k,i,a)=>{
+  const t=T[k], angle=(i/a.length)*360, r=i%2===0?72:112, dur=14+i*2.5;
+  const st=document.createElement('style');
+  st.textContent='@keyframes ob'+i+'{from{transform:rotate('+angle+'deg) translateX('+r+'px) rotate(-'+angle+'deg)}to{transform:rotate('+(angle+360)+'deg) translateX('+r+'px) rotate(-'+(angle+360)+'deg)}}';
+  document.head.appendChild(st);
+  const img=t.u?'<img src="'+t.u+'" style="width:26px;height:26px;object-fit:contain;filter:brightness(1.6) drop-shadow(0 0 6px rgba(0,212,255,.5))" onerror="this.style.display=\'none\'">':'<span class="oisvg">'+t.s.replace(/<svg /,'<svg style="width:26px;height:26px" ')+'</span>';
+  ow.innerHTML+='<div class="oi" style="animation:ob'+i+' '+dur+'s linear infinite">'+img+'<span>'+t.n+'</span></div>';
+});
+
+// ── PROJECT TOOLS ────────────────────────────────────────────
+[['pt1',[['databricks','Databricks'],['spark','Spark'],['parquet','Parquet'],['python','Python'],['adf','ADF']],'#00d4ff'],
+ ['pt2',[['ssis','SSIS'],['sqlserver','SQL Server'],['sql','T-SQL'],['oracle','Oracle']],'#7b5cf0'],
+ ['pt3',[['python','Python'],['sql','SQL'],['adf','Data Integration'],['parquet','Analytics']],'#00ff9d']
+].forEach(([id,tools,col])=>{
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.innerHTML=tools.map(([k,l])=>'<span class="ptool" style="color:'+col+';border-color:'+col+'33;background:'+col+'0d"><span class="ptsvg">'+tImg(k,11)+'</span>'+l+'</span>').join('');
+});
+
+// ── SKILLS SHOWCASE ──────────────────────────────────────────
+const CATS = [
+  {n:'Languages & Query', ico:'{ }', col:'#00d4ff',
+   desc:'Core scripting and query languages powering data extraction, transformation and automation.',
+   tools:[['python','Python'],['sql','SQL / T-SQL'],['sqlserver','Stored Procs'],['sql','T-SQL Optim.']]},
+  {n:'ETL & Pipelines', ico:'~>', col:'#7b5cf0',
+   desc:'End-to-end pipeline tools — from ingestion and scheduling through transformation and loading.',
+   tools:[['ssis','SSIS'],['adf','Azure Data Factory'],['spark','Apache Spark'],['databricks','Databricks'],['parquet','Batch Jobs']]},
+  {n:'Databases & Cloud', ico:'DB', col:'#00ff9d',
+   desc:'Relational databases and cloud infrastructure powering analytics workloads at scale.',
+   tools:[['sqlserver','SQL Server'],['oracle','Oracle DB'],['azure','Azure'],['parquet','Parquet'],['sql','Data Marts']]},
+  {n:'AI / Analytics', ico:'AI', col:'#ff6b6b',
+   desc:'AI-driven workflows including NLP pipelines, OCR automation and BI reporting.',
+   tools:[['nlp','NLP'],['nlp','Prompt Eng.'],['nlp','OCR / Text'],['powerbi','Power BI'],['nlp','Text Proc.']]},
+  {n:'Domain Knowledge', ico:'Rx', col:'#ffd700',
+   desc:'Deep expertise in regulated healthcare, genomics and government data environments.',
+   tools:[['sql','EHR Systems'],['sqlserver','LIS / Lab'],['nlp','Genomics'],['ssis','EDI'],['sql','HIPAA']]},
+  {n:'Architecture', ico:'[]', col:'#ff9d00',
+   desc:'Modern data architecture patterns ensuring scalability, data quality and compliance.',
+   tools:[['parquet','Medallion Arch'],['adf','Data Modeling'],['ssis','ETL Design'],['nlp','QC Automation'],['sql','SOPs']]},
+];
+
+let cur=0, timer=null, paused=false;
+const INTV=4500;
+const skTabs=document.getElementById('skTabs');
+const skInd=document.getElementById('skInd');
+const skHdr=document.getElementById('skHdr');
+const skBig=document.getElementById('skBigIco');
+const skTit=document.getElementById('skCatTitle');
+const skDsc=document.getElementById('skCatDesc');
+const skGrid=document.getElementById('skGrid');
+const skDots=document.getElementById('skDots');
+const skFill=document.getElementById('skFill');
+const skWash=document.getElementById('skWash');
+
+// Build tabs
+CATS.forEach((c,i)=>{
+  const d=document.createElement('div');
+  d.className='sk-tab'+(i===0?' on':'');
+  d.innerHTML='<div class="sk-tabico">'+c.ico+'</div><div><div class="sk-tabn">'+c.n+'</div><div class="sk-tabc">'+c.tools.length+' tools</div></div>';
+  d.onclick=()=>{paused=true;clearInterval(timer);go(i);setTimeout(()=>{paused=false;autoStart();},9000);};
+  skTabs.appendChild(d);
+});
+// Build dots
+CATS.forEach((_,i)=>{
+  const d=document.createElement('div');
+  d.className='sk-dot'+(i===0?' on':'');
+  d.onclick=()=>{paused=true;clearInterval(timer);go(i);setTimeout(()=>{paused=false;autoStart();},9000);};
+  skDots.appendChild(d);
+});
+
+function moveInd(i){
+  const tabs=skTabs.querySelectorAll('.sk-tab');
+  if(!tabs[i])return;
+  const tb=tabs[i], c=CATS[i].col;
+  skInd.style.cssText='top:'+tb.offsetTop+'px;height:'+tb.offsetHeight+'px;background:'+c+';box-shadow:0 0 12px '+c+';';
+}
+
+function go(i){
+  cur=i;
+  const cat=CATS[i], col=cat.col;
+
+  // tabs
+  skTabs.querySelectorAll('.sk-tab').forEach((t,j)=>{
+    const on=j===i;
+    t.classList.toggle('on',on);
+    t.querySelector('.sk-tabico').style.cssText=on?'background:'+col+';border-color:'+col+';box-shadow:0 0 16px '+col+';color:#070b14;':'';
+    t.querySelector('.sk-tabc').style.color=on?col:'';
+  });
+  moveInd(i);
+
+  // dots
+  skDots.querySelectorAll('.sk-dot').forEach((d,j)=>{
+    const on=j===i;
+    d.classList.toggle('on',on);
+    d.style.background=on?col:'';
+    d.style.width=on?'24px':'';
+    d.style.borderRadius=on?'3px':'';
+  });
+
+  // wash
+  skWash.style.background='radial-gradient(ellipse at 65% 40%,'+col+'18 0%,transparent 62%)';
+
+  // header fade out
+  skHdr.style.transition='opacity .3s,transform .3s';
+  skHdr.style.opacity='0';
+  skHdr.style.transform='translateY(14px)';
+
+  setTimeout(()=>{
+    // update header
+    skBig.textContent=cat.ico;
+    skBig.style.cssText='color:'+col+';box-shadow:0 0 20px '+col+'55;border-color:'+col+'44;font-size:1.6rem;width:62px;height:62px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,255,255,.04);border:1px solid;font-family:Space Mono,monospace;animation:skPulse 3s ease-in-out infinite;';
+    skTit.textContent=cat.n;
+    skTit.style.color=col;
+    skDsc.textContent=cat.desc;
+    // fade in
+    skHdr.style.transition='opacity .45s cubic-bezier(.16,1,.3,1),transform .45s cubic-bezier(.16,1,.3,1)';
+    skHdr.style.opacity='1';
+    skHdr.style.transform='translateY(0)';
+
+    // build cards
+    skGrid.innerHTML='';
+    cat.tools.forEach(([key,label],ti)=>{
+      const card=document.createElement('div');
+      card.className='sk-card';
+      card.style.cssText='--tc:'+col+';animation:skIn .5s '+(ti*.07)+'s cubic-bezier(.34,1.3,.64,1) both;';
+      card.style.setProperty('--tc',col);
+      // dynamic hover color
+      card.addEventListener('mouseenter',()=>{card.style.borderColor=col;card.style.setProperty('--tc',col);});
+      card.addEventListener('mouseleave',()=>{card.style.borderColor='';});
+
+      const logo=document.createElement('div');
+      logo.className='sk-clogo';
+      logo.style.animation='skFloat '+(3.5+ti*.35)+'s '+(ti*.22)+'s ease-in-out infinite';
+      const t=T[key]||{};
+      logo.innerHTML=t.u
+        ?'<img src="'+t.u+'" onerror="this.style.display=\'none\'">'
+        :(t.s?t.s.replace(/<svg /,'<svg style="width:46px;height:46px" '):'');
+
+      const nm=document.createElement('div');
+      nm.className='sk-cname';
+      nm.textContent=label;
+
+      // bottom bar color
+      const bar=document.createElement('style');
+      bar.textContent='.sk-card[data-ci="'+cur+'-'+ti+'"]:hover::after{background:'+col+'}';
+      document.head.appendChild(bar);
+      card.dataset.ci=cur+'-'+ti;
+
+      card.appendChild(logo);
+      card.appendChild(nm);
+      skGrid.appendChild(card);
+    });
+
+    // inject ::after color via inline approach
+    document.querySelectorAll('.sk-card').forEach(c2=>{
+      c2.addEventListener('mouseenter',()=>{
+        // inject via style attr workaround using outline trick at bottom
+        c2.style.outline='2px solid '+col;
+        c2.style.outlineOffset='-2px';
+      });
+      c2.addEventListener('mouseleave',()=>{ c2.style.outline=''; c2.style.outlineOffset=''; });
+    });
+
+  }, 230);
+
+  // progress
+  skFill.style.transition='none';
+  skFill.style.width='0%';
+  skFill.style.background=col;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    skFill.style.transition='width '+INTV+'ms linear';
+    skFill.style.width='100%';
+  }));
+}
+
+function autoStart(){
+  clearInterval(timer);
+  timer=setInterval(()=>{ if(!paused) go((cur+1)%CATS.length); }, INTV);
+}
+
+// cycling never pauses
+
+go(0);
+autoStart();
+window.addEventListener('load',()=>moveInd(cur));
+
+// ── FLOATING BG ───────────────────────────────────────────────
+const fbgW=document.getElementById('fbgWrap');
+const fbgKeys=['python','spark','databricks','azure','ssis','powerbi','sqlserver','oracle','parquet','adf','nlp','sql'];
+const fbgPos=[[8,12],[22,68],[78,18],[87,58],[14,42],[62,78],[44,22],[91,37],[33,63],[57,48],[72,72],[26,87]];
+const fbgSpd=[.08,.13,.06,.16,.10,.07,.14,.09,.11,.15,.06,.12];
+const fbgEls=[];
+fbgKeys.forEach((k,i)=>{
+  const t=T[k], [lx,ly]=fbgPos[i];
+  const img=t.u?'<img src="'+t.u+'" onerror="this.style.display=\'none\'">':'<div class="fbsvg">'+t.s+'</div>';
+  const el=document.createElement('div');
+  el.className='fbg';
+  el.innerHTML=img+'<span>'+t.n+'</span>';
+  el.style.cssText='left:'+lx+'%;top:'+ly+'%;animation:bgfloat '+(8+i*1.2)+'s '+(i*.8)+'s ease-in-out infinite;';
+  fbgW.appendChild(el);
+  fbgEls.push({el,spd:fbgSpd[i]});
+});
+let ticking=false;
+window.addEventListener('scroll',()=>{
+  if(!ticking){
+    requestAnimationFrame(()=>{
+      const sy=window.scrollY;
+      fbgEls.forEach(({el,spd})=>{
+        el.style.marginTop=(-sy*spd)+'px';
+        el.style.opacity=Math.min(.14,.04+sy*.00015);
+      });
+      ticking=false;
+    });
+    ticking=true;
+  }
+},{passive:true});
+
+// ── CANVAS ───────────────────────────────────────────────────
+const cv=document.getElementById('bgc'),ctx=cv.getContext('2d');
+let W,H,pts=[];
+function rsz(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
+rsz();window.addEventListener('resize',()=>{rsz();initP();});
+class P{constructor(){this.r();}r(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.38;this.vy=(Math.random()-.5)*.38;this.sz=Math.random()*2+.5;this.a=Math.random()*.4+.1;this.c=Math.random()>.7?'#00d4ff':Math.random()>.5?'#7b5cf0':'#00ff9d';}u(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W)this.vx*=-1;if(this.y<0||this.y>H)this.vy*=-1;}d(){ctx.beginPath();ctx.arc(this.x,this.y,this.sz,0,Math.PI*2);ctx.fillStyle=this.c;ctx.globalAlpha=this.a;ctx.fill();ctx.globalAlpha=1;}}
+function initP(){pts=[];const n=Math.floor(W*H/12000);for(let i=0;i<n;i++)pts.push(new P());}
+initP();
+(function loop(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.u();p.d();});for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<140){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle='rgba(0,212,255,'+(1-d/140)*.1+')';ctx.lineWidth=.5;ctx.stroke();}}requestAnimationFrame(loop);})();
+
+// ── SCROLL REVEAL ────────────────────────────────────────────
+const ro=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis');}),{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+
+// ── SMOOTH NAV ───────────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});}));
+</script>
+</body>
+</html>
